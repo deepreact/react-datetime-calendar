@@ -1,6 +1,6 @@
 {
   "name": "react-datetime-calendar",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Multifunctional Date Time Picker",
   "keywords": [
     "react-component",
@@ -30,10 +30,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/deepreact/react-dateTimePicker"
+    "url": "https://github.com/deepreact/react-datetime-calendar"
   },
   "bugs": {
-    "url": "https://github.com/deepreact/react-dateTimePicker"
+    "url": "https://github.com/deepreact/react-datetime-calendar"
   },
   "browserify": {
     "transform": [
