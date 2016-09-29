@@ -22,6 +22,8 @@ React.render(<DateTimePicker />, document.getElementById("myApp"));
 
 ```
 
+![Alt text](/snapshot.png?raw=true "React DateTime Calendar")
+
 ### Options
 
 1. mode
