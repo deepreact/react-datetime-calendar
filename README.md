@@ -2,21 +2,21 @@
 Author - "Deep Prakash"
 ########################
 
-# React DateTimePicker
+# React DateTime Calendar
 
 > Multifunctional DateTimePicker
 
 ## Install
 
 ```
-npm install react-dateTimePicker --save
+npm install react-datetime-calendar --save
 ```
 
 ## Usage
 
 ```js
 
-var DateTimePicker = require("react-dateTimePicker");
+var DateTimePicker = require("react-datetime-calendar");
 
 React.render(<DateTimePicker />, document.getElementById("myApp"));
 
@@ -26,6 +26,8 @@ React.render(<DateTimePicker />, document.getElementById("myApp"));
 
 1. mode
 2. background
+3. dateFormat
+4. timeFormat
 
 
 ### Descriptions
@@ -40,4 +42,15 @@ React.render(<DateTimePicker />, document.getElementById("myApp"));
 
 		```
 		<DateTimePicker background = "white"/>
+		```
+3. dateFormat - Allowed Values :- YYYY-MM-DD / DD-MM-YYYY / YYYY/MM/DD / DD/MM/YYYY / MONTH DATE YEAR / DATE MONTH YEAR
+		
+		```
+		<DateTimePicker dateFormat = "MONTH DATE YEAR"/>
+		```
+
+4. timeFormat - Allowed Values :- 12 / 24
+		
+		```
+		<DateTimePicker timeFormat = "12"/>
 		```

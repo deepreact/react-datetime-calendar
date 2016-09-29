@@ -1,6 +1,6 @@
 {
-  "name": "react-dateTimePicker",
-  "version": "0.0.0",
+  "name": "react-datetime-calendar",
+  "version": "0.0.9",
   "description": "Multifunctional Date Time Picker",
   "keywords": [
     "react-component",
@@ -8,16 +8,24 @@
     "DateTimePicker",
     "DateTime",
     "Time",
+    "TimePicker",
+    "DatePicker",
     "react-dateTimePicker",
     "react-DatePicker",
     "react-TimePicker"
   ],
-  "main": "DateTimePicker.js",
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    }
+  },
+  "main": "./lib/DateTimePicker.js",
   "author": "Deep Prakash <deepprakashp354@outlook.com>",
   "license": "ISC",
   "scripts": {
-    "build": "./node_modules/.bin/babel DateTimePicker.jsx -o DateTimePicker.js",
-    "test": "jshint . --exclude node_modules",
+    "build": "./node_modules/.bin/babel ./lib/DateTimePicker.jsx -o ./lib/DateTimePicker.js",
+    "test": "eslint -c .eslintrc ./lib/DateTimePicker.js",
     "prepublish": "npm run test && npm run build"
   },
   "repository": {
@@ -33,6 +41,7 @@
     ]
   },
   "dependencies": {
+    "eslint": "^3.6.1",
     "node-lessify": "0.0.10"
   },
   "peerDependencies": {
@@ -41,6 +50,8 @@
   },
   "devDependencies": {
     "babel": "^5.6.23",
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
     "jshint": "^2.7.0"
   }
 }

@@ -1,20 +1,20 @@
 /*
 * @Author: Deep Prakash
 * @Date:   2016-09-26 17:08:02
-* @Last Modified by:   Deep Prakash
-* @Last Modified time: 2016-09-27 21:17:47
+* @Last Modified by:   deepreact
+* @Last Modified time: 2016-09-29 11:49:53
 */
 
-import React from 'react'
+import React from 'react';
 
 class DateTimePicker extends React.Component{
 	// Getting props and state
 	constructor(props){
 		super(props);
-
 		this.state={
 			dropdowndisplay:"none",
 			calendarObj:[],
+			currentMonth:0,
 			currentMonth:0,
 			currentYear:2016,
 			todayDate:1,
@@ -24,7 +24,10 @@ class DateTimePicker extends React.Component{
 			clockVisible:false,
 			calendarVisible:true,
 			submitTime:"none",
-		}
+			dateFormat:"YYYY-MM-DD",
+			timeFormat:"HH:MM",
+			ampm:"",
+		};
 	}
 
 	// when component is mount
@@ -40,15 +43,69 @@ class DateTimePicker extends React.Component{
 
 		// setting clock
 		if(this.props.mode == "time" || this.props.mode == "datetime" || this.props.mode == undefined){
-			this.refs.hour.value = this.state.currentHour;
-			this.refs.minutes.value = this.state.currentMinute;
+			var time;
+			var ampm = "";
+			// checking if time format is 12 hr
+			if(this.props.timeFormat == "12"){
+				if(parseInt(this.state.currentHour) > 12){
+					time = parseInt(this.state.currentHour) - 12;
+					ampm = "PM";
+					this.setState({
+						ampm:ampm
+					});
+				}
+				else{
+					time = this.state.currentHour;
+					ampm = "AM";
+					this.setState({
+						ampm:ampm
+					});
+				}
+			}
+			else{
+				time = this.state.currentHour;
+				ampm = "";
+				this.setState({
+					ampm:ampm
+				});
+			}
+
+			if(ampm == ""  || this.props.timeFormat == undefined || this.props.timeFormat.length == 0){
+				this.refs.hour.value = time;
+				this.refs.minutes.value = this.state.currentMinute;
+			}
+			else{
+				this.refs.hour.value = time;
+				this.refs.minutes.value = this.state.currentMinute;
+				this.refs.ampm.value = ampm;
+			}
+			
 		}
 		if(this.props.mode == "time"){
 			this.setState({
 				Clock:"block",
 				submitTime:"block"
-			})
+			});
 		}
+
+		// setting format
+		if(this.props.dateFormat != undefined){
+			this.setState({
+				dateFormat:this.props.dateFormat
+			});	
+		}
+		if(this.props.timeFormat != undefined && this.props.timeFormat == '12'){
+			this.setState({
+				timeFormat:"HH:MM AM/PM"
+			});
+		}
+		else{
+			this.setState({
+				timeFormat:"HH:MM"
+			});
+		}
+
+		// getting calendar
 		this.getCalendar(calendar_start, no_of_days, currentMonth, today.getFullYear());
 	}
 
@@ -57,7 +114,8 @@ class DateTimePicker extends React.Component{
 		var today = new Date();
 		var currentMonth = today.getMonth() + 1;
 		var currentYear = today.getFullYear();
-		var currentHour = today.getHours()
+		var currentDate = today.getDate();
+		var currentHour = today.getHours();
 		var currentMinute = today.getMinutes();
 		this.setState({
 			todayDate:today,
@@ -79,6 +137,32 @@ class DateTimePicker extends React.Component{
 	// Hiding calendar on clicking outside
 	hideCalender(event){
 		if(event.target.id != "DateTime"){
+			var formatedtime;
+			if((this.state.clockVisible == true && this.state.calendarVisible == false) || this.props.mode == "time"){
+				var hr = "00";
+				var min = "00";
+				if(this.refs.hour.value.length == 1){
+					hr = "0"+this.refs.hour.value;
+				}
+				else{
+					hr = this.refs.hour.value;
+				}
+				if(this.refs.minutes.value.length == 1){
+					min = "0"+this.refs.minutes.value;
+				}
+				else{
+					min = this.refs.minutes.value;
+				}
+				// formatting time
+				if(this.state.ampm.length != 0){
+					formatedtime = hr+":"+min+":00 "+this.state.ampm;
+				}
+				else{
+					formatedtime = hr+":"+min+":00";
+				}
+				this.refs.DateTimeInput.value = formatedtime;
+			}
+
 			this.setState({
 				dropdowndisplay:"none"
 			});
@@ -154,20 +238,97 @@ class DateTimePicker extends React.Component{
 
 	// Select Date
 	selectDate(date, month, year){
+		var formateddate;
+		var formatedtime;
+		var months = [
+			"JAN",
+			"FEB",
+			"MAR",
+			"APR",
+			"MAY",
+			"JUN",
+			"JUL",
+			"AUG",
+			"SEP",
+			"OCT",
+			"NOV",
+			"DEC"
+		]
+		
+		// adding 0 to single digit date
+		if(date.toString().length == 1){
+			date = "0"+date;
+		}
+		// fomatting date
+		if(this.state.dateFormat == 'YYYY-MM-DD' || this.state.dateFormat == 'yyyy-mm-dd'){
+			// adding 0 to single digit month
+			if(month.toString().length == 1){
+				month = "0"+month;
+			}
+			formateddate = year+"-"+month+"-"+date;
+		}
+		else if(this.state.dateFormat == 'DD-MM-YYYY' || this.state.dateFormat == 'dd-mm-yyyy'){
+			// adding 0 to single digit month
+			if(month.toString().length == 1){
+				month = "0"+month;
+			}
+			formateddate = date+"-"+month+"-"+year;	
+		}
+		else if(this.state.dateFormat == 'YYYY/MM/DD' || this.state.dateFormat == 'yyyy/mm/dd'){
+			// adding 0 to single digit month
+			if(month.toString().length == 1){
+				month = "0"+month;
+			}
+			formateddate = year+"/"+month+"/"+date;	
+		}
+		else if(this.state.dateFormat == 'DD/MM/YYYY' || this.state.dateFormat == 'dd/mm/yyyy'){
+			// adding 0 to single digit month
+			if(month.toString().length == 1){
+				month = "0"+month;
+			}
+			formateddate = date+"/"+month+"/"+year;	
+		}
+		else if(this.state.dateFormat == 'MONTH DATE YEAR' || this.state.dateFormat == 'month date year'){
+			formateddate = months[month-1]+" "+date+" "+year;
+		}
+		else if(this.state.dateFormat == 'DATE MONTH YEAR' || this.state.dateFormat == 'date month year'){
+			formateddate = date+" "+months[month-1]+" "+year;
+		}
+		else{
+			formateddate = year+"-"+month+"-"+date;
+		}
+
 		if(this.state.clockVisible == true){
-			var datetime = year+"/"+month+"/"+date+" "+this.refs.hour.value+":"+this.refs.minutes.value+":00";
+			var hr = "00";
+			var min = "00";
+			if(this.refs.hour.value.length == 1){
+				hr = "0"+this.refs.hour.value;
+			}
+			else{
+				hr = this.refs.hour.value;
+			}
+			if(this.refs.minutes.value.length == 1){
+				min = "0"+this.refs.minutes.value;
+			}
+			else{
+				min = this.refs.minutes.value;
+			}
+
+			// formatting time
+			if(this.state.ampm.length != 0){
+				formatedtime = hr+":"+min+":00 "+this.state.ampm;
+			}
+			else{
+				formatedtime = hr+":"+min+":00";
+			}
+
+			var datetime = formateddate+" "+formatedtime;
 			this.refs.DateTimeInput.value = datetime;
 		}
 		else{
-			var datetime = year+"/"+month+"/"+date;
+			var datetime = formateddate;
 			this.refs.DateTimeInput.value = datetime;
 		}
-	}
-
-	// Select Time
-	selectTime(){
-		var time = this.refs.hour.value+":"+this.refs.minutes.value;
-		this.refs.DateTimeInput.value = time;
 	}
 
 	// get no. of days in the month
@@ -206,6 +367,22 @@ class DateTimePicker extends React.Component{
 		}
 		else if(currentHour <= 0){
 			this.refs.minutes.value = 59;
+		}
+	}
+
+	// Change AM PM
+	changeAmPm(){
+		if(this.refs.ampm.value == "AM"){
+			this.refs.ampm.value = "PM";
+			this.setState({
+				ampm:"PM"
+			});
+		}
+		else{
+			this.refs.ampm.value = "AM";
+			this.setState({
+				ampm:"AM"
+			});
 		}
 	}
 
@@ -273,9 +450,8 @@ class DateTimePicker extends React.Component{
 
 	// Rendering the view
 	render(){
-		// console.log(this.state.todayDate);
 		// styles
-		var dropdownstyle
+		var dropdownstyle;
 		if(this.props.background != undefined){
 			dropdownstyle = {
 				background:this.props.background,
@@ -283,7 +459,7 @@ class DateTimePicker extends React.Component{
 				width:300,
 				boxShadow:"1px 1px 2px 1px #bdc3c7",
 				textAlign:"center"
-			}
+			};
 		}
 		else{
 			dropdownstyle = {
@@ -292,12 +468,32 @@ class DateTimePicker extends React.Component{
 				width:300,
 				boxShadow:"1px 1px 2px 1px #bdc3c7",
 				textAlign:"center"
-			}
+			};
 		}
+
+		var inputBoxWrapper = {
+			width:300,
+			borderStyle:"solid",
+			borderWidth:1,
+			borderColor:"#bdc3c7",
+			fontFamily:"verdana",
+			fontSize:16,
+			textAlign:"center",
+			borderRadius:2,
+		};
+
+		var calendarImgInline = {
+			display:"inline-block",
+			marginTop:"-5px",
+		};
 		
 		var inputstyle={
-			width:300,
-		}
+			outline:"none",
+			width:"90%",
+			padding:4,
+			borderStyle:"none",
+			display:"inline-block"
+		};
 		var inlineBlocks = {
 			display:"inline-block",
 			width:"14%",
@@ -305,7 +501,7 @@ class DateTimePicker extends React.Component{
 			borderWidth:1,
 			borderColor:"#bdc3c7",
 			cursor:"pointer"
-		}
+		};
 		var dateToday = {
 			display:"inline-block",
 			width:"14%",
@@ -315,16 +511,16 @@ class DateTimePicker extends React.Component{
 			background:"#bdc3c7",
 			fontWeight:"bold",
 			cursor:"pointer"
-		}
+		};
 		var calendarStyle = {
 			display:this.state.Calendar,
 			width:"100%",
 			padding:8,
 			textAlign:"center"
-		}
+		};
 		var calendarHead = {
 			fontWeight:"bold",
-		}
+		};
 		var nullBlock = {
 			visibility:"hidden",
 			display:"inline-block",
@@ -332,62 +528,72 @@ class DateTimePicker extends React.Component{
 			borderStyle:"solid",
 			borderWidth:1,
 			borderColor:"#bdc3c7"
-		}
+		};
 		var calendarHeaderStyle = {
 			marginBottom:4,
 			fontWeight:"bold"
-		}
+		};
 		var navstyle={
 			fontWeight:"bold",
 			padding:6,
-		}
+		};
 		var navBlocks={
 			display:"inline-block"
-		}
+		};
 		var prev={
 			float:"left",
 			display:"inline-block",
-			background:"transparent",
-			borderStyle:"none"
-		}
+			backgroundImage:"url('img/prev.png')",
+			backgroundSize:"100% 100%",
+			backgroundColor:"transparent",
+			borderStyle:"none",
+			width:30,
+			height:20,
+			outline:"none"
+		};
 		var next={
 			float:"right",
 			display:"inline-block",
-			background:"transparent",
-			borderStyle:"none"
-		}
+			backgroundImage:"url('img/next.png')",
+			backgroundSize:"100% 100%",
+			backgroundColor:"transparent",
+			borderStyle:"none",
+			width:30,
+			height:20,
+			outline:"none"
+		};
 
 		var clockStyle = {
 			display:this.state.Clock,
 			width:"100%",
 			textAlign:"center",
-		}
+		};
 		var hourStyle = {
 			display:"inline-block",
 			margin:10,
-		}
+		};
 		var incDec = {
 			fontWeight:"bold",
 			fontSize:18,
 			cursor:"pointer"
-		}
+		};
 		var timeInputStyle = {
 			width:30,
 			textAlign:"center"
-		}
+		};
 		var separator = {
 			fontWeight:"bold",
 			fontSize:20,
 			display:"inline-block",
-		}
+		};
 		var hiddenBlock = {
 			visibility:"hidden"
-		}
+		};
 
 		var selectTimeStyle={
 			cursor:"pointer",
-			padding:8
-		}
+			padding:10,
+		};
 
 		var submitTime = {
 			display:this.state.submitTime,
@@ -396,21 +602,21 @@ class DateTimePicker extends React.Component{
 			borderStyle:"solid",
 			borderWidth:1,
 			borderColor:"#95a5a6"
-		}
+		};
 
 		// toggle Calendar
 		const toggleCalendar = (
-			<div id='DateTime' style={selectTimeStyle} onClick={this.toggleCalendar.bind(this)}>Toggle Calendar</div>
-		)
+			<div id='DateTime' style={selectTimeStyle} onClick={this.toggleCalendar.bind(this)}><img id='DateTime' src='img/calendar.png' width='20' alt='Toggle Calendar' title='Toggle calendar'/></div>
+		);
 
 		// Calendar Nav
 		const calendarNav = (
 			<div style={navstyle}>
-				<button id='DateTime' style={prev} onClick={this.prevMonth.bind(this, this.state.currentMonth, this.state.currentYear)}>Prev</button>
+				<button id='DateTime' style={prev} onClick={this.prevMonth.bind(this, this.state.currentMonth, this.state.currentYear)}></button>
 				<div style={navBlocks}>{this.state.currentMonth} / {this.state.currentYear}</div>
-				<button id='DateTime' style={next} onClick={this.nextMonth.bind(this, this.state.currentMonth, this.state.currentYear)}>Next</button>
+				<button id='DateTime' style={next} onClick={this.nextMonth.bind(this, this.state.currentMonth, this.state.currentYear)}></button>
 			</div>
-		)
+		);
 
 		// calendar Header containing days
 		const calendarHeader = (
@@ -423,32 +629,32 @@ class DateTimePicker extends React.Component{
 				<div style={inlineBlocks}>Sat</div>
 				<div style={inlineBlocks}>Sun</div>
 			</div>
-		)
+		);
 
 		// Calendar dates
 		const calendar = this.state.calendarObj.map(function(index){
 			if(index != "" && index != this.state.todayDate.getDate()){
 				return (
 					<div onClick={this.selectDate.bind(this, index, this.state.currentMonth, this.state.currentYear)} style={inlineBlocks}>{index}</div>
-				)
+				);
 			}
 			else if(index == this.state.todayDate.getDate()){
 				if(this.state.todayDate.getMonth()+1 == this.state.currentMonth && this.state.todayDate.getFullYear() == this.state.currentYear)
 				{
 					return (
 						<div onClick={this.selectDate.bind(this, index, this.state.currentMonth, this.state.currentYear)} style={dateToday}>{index}</div>
-					)
+					);
 				}
 				else{
 					return (
 						<div onClick={this.selectDate.bind(this, index, this.state.currentMonth, this.state.currentYear)} style={inlineBlocks}>{index}</div>
-					)
+					);
 				}
 			}
 			else{
 				return (
 					<div style={nullBlock}></div>
-				)
+				);
 			}
 		}.bind(this));
 
@@ -459,31 +665,27 @@ class DateTimePicker extends React.Component{
 				{calendarHeader}
 				{calendar}
 			</div>
-		)
+		);
 		// input box
 		const inputBox= (
-			<div>
-				<input id='DateTime' ref='DateTimeInput' type='text' style={inputstyle} onClick={this.showCalendar.bind(this)}/>
+			<div style={inputBoxWrapper}>
+				<input id='DateTime' ref='DateTimeInput' type='text' style={inputstyle} onClick={this.showCalendar.bind(this)} placeholder={this.state.dateFormat+" "+this.state.timeFormat}/>
+				<img style={calendarImgInline} src='img/calendarLight.png' width='26' />
 			</div>
-		)
+		);
 
 		//show clock
 		const showClock=(
-			<div id="DateTime" style={selectTimeStyle} onClick={this.showClock.bind(this)}>Toggle Clock</div>
-		)
+			<div id="DateTime" style={selectTimeStyle} onClick={this.showClock.bind(this)}><img id='DateTime' src='img/clock.png' width='16' alt='Toggle Clock' title='Toggle Clock'/></div>
+		);
 
-		// submitTime
-		const submitTimebtn = (
-			<div style={submitTime} onClick={this.selectTime.bind(this)}>Select</div>
-		)
-
-		// Clock
-		const clock = (
+		// 24 HR Clock
+		const clockTypeOne = (
 			<div style={clockStyle}>
 				<div style={hourStyle}>
-					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "INC")}> + </div>
+					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "INC")}> <img id='DateTime' src='img/inc.png' width='30' /> </div>
 					<input name='hour' ref='hour' id='DateTime' style={timeInputStyle} type='text'/> 
-					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "DEC")}> - </div>
+					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "DEC")}> <img id='DateTime' src='img/dec.png' width='30' /> </div>
 				</div>
 				
 				<div style={separator}>
@@ -493,58 +695,111 @@ class DateTimePicker extends React.Component{
 				</div>
 
 				<div style={hourStyle}>
-					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "INC")}> + </div>
+					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "INC")}> <img id='DateTime' src='img/inc.png' width='30' /> </div>
 					<input ref='minutes' id='DateTime' style={timeInputStyle} type='text'/> 
-					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "DEC")}> - </div>
+					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "DEC")}> <img id='DateTime' src='img/dec.png' width='30' /> </div>
 				</div>
-				{submitTimebtn}
 			</div>
-		)
+		);
+
+		// 12 HR CLOCK
+		const clockTypeTwo = (
+			<div style={clockStyle}>
+				<div style={hourStyle}>
+					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "INC")}> <img id='DateTime' src='img/inc.png' width='30' /> </div>
+					<input name='hour' ref='hour' id='DateTime' style={timeInputStyle} type='text'/> 
+					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "DEC")}> <img id='DateTime' src='img/dec.png' width='30' /> </div>
+				</div>
+				
+				<div style={separator}>
+					<div style={hiddenBlock}> + </div>
+					<div> : </div>
+					<div style={hiddenBlock}> - </div>
+				</div>
+
+				<div style={hourStyle}>
+					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "INC")}> <img id='DateTime' src='img/inc.png' width='30' /> </div>
+					<input ref='minutes' id='DateTime' style={timeInputStyle} type='text'/> 
+					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "DEC")}> <img id='DateTime' src='img/dec.png' width='30' /> </div>
+				</div>
+
+				<div style={hourStyle}>
+					<div id='DateTime' style={incDec} onClick={this.changeAmPm.bind(this)}> <img id='DateTime' src='img/inc.png' width='30' /> </div>
+					<input ref='ampm' id='DateTime' style={timeInputStyle} type='text'/> 
+					<div id='DateTime' style={incDec} onClick={this.changeAmPm.bind(this)}> <img id='DateTime' src='img/dec.png' width='30' /> </div>
+				</div>
+			</div>
+		);
 
 		const calendarMode = (
 			<div>
 				{toggleCalendar}
 				{calendarData}
 			</div>
-		)
+		);
 
-		const clockMode = (
+		const clockModeOne = (
 			<div>
 				{showClock}
-				{clock}
+				{clockTypeOne}
 			</div>
-		)
+		);
+		const clockModeTwo = (
+			<div>
+				{showClock}
+				{clockTypeTwo}
+			</div>
+		);
 
 		// setting dropdown after checking the mode
 		let dropDown;
 		if(this.props.mode == "datetime" || this.props.mode == undefined){
-			dropDown = (
-				<div style={dropdownstyle}>
-					{calendarMode}
-					{clockMode}	
-				</div>
-			)	
+			if(this.props.timeFormat == undefined || this.props.timeFormat == "24" || this.props.timeFormat.length == 0){
+				dropDown = (
+					<div style={dropdownstyle}>
+						{calendarMode}
+						{clockModeOne}
+					</div>
+				);
+			}
+			else{
+				dropDown = (
+					<div style={dropdownstyle}>
+						{calendarMode}
+						{clockModeTwo}
+					</div>
+				);
+			}
+				
 		}
 		else if(this.props.mode == "date"){
 			dropDown = (
 				<div style={dropdownstyle}>
 					{calendarData}
 				</div>
-			)
+			);
 		}
 		else if(this.props.mode == "time"){
-			dropDown = (
-				<div style={dropdownstyle}>
-					{clock}
-				</div>
-			)
+			if(this.props.timeFormat == undefined || this.props.timeFormat == "24" || this.props.timeFormat.length == 0){
+				dropDown = (
+					<div style={dropdownstyle}>
+						{clockTypeOne}
+					</div>
+				);	
+			}
+			else{
+				dropDown = (
+					<div style={dropdownstyle}>
+						{clockTypeTwo}
+					</div>
+				);
+			}
 		}
-		
 
 		return <div>
 			{inputBox}
 			{dropDown}
-		</div>
+		</div>;
 	}
 }
 
