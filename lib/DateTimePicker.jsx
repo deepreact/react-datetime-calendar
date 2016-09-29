@@ -1,11 +1,20 @@
 /*
 * @Author: Deep Prakash
 * @Date:   2016-09-26 17:08:02
-* @Last Modified by:   deepreact
-* @Last Modified time: 2016-09-29 11:49:53
+* @Last Modified by:   Deep Prakash
+* @Last Modified time: 2016-09-29 15:11:08
 */
 
 import React from 'react';
+// images
+var calendarDark = require('file!./img/calendar.png');
+var calendarLight = require('file!./img/calendarLight.png');
+var prevBtn = require('file!./img/prev.png');
+var nextBtn = require('file!./img/next.png');
+var clockBtn = require('file!./img/clock.png')
+var incBtn = require('file!./img/inc.png');
+var decBtn = require('file!./img/dec.png');
+
 
 class DateTimePicker extends React.Component{
 	// Getting props and state
@@ -543,7 +552,7 @@ class DateTimePicker extends React.Component{
 		var prev={
 			float:"left",
 			display:"inline-block",
-			backgroundImage:"url('img/prev.png')",
+			backgroundImage:"url('"+prevBtn+"')",
 			backgroundSize:"100% 100%",
 			backgroundColor:"transparent",
 			borderStyle:"none",
@@ -554,7 +563,7 @@ class DateTimePicker extends React.Component{
 		var next={
 			float:"right",
 			display:"inline-block",
-			backgroundImage:"url('img/next.png')",
+			backgroundImage:"url('"+nextBtn+"')",
 			backgroundSize:"100% 100%",
 			backgroundColor:"transparent",
 			borderStyle:"none",
@@ -606,7 +615,7 @@ class DateTimePicker extends React.Component{
 
 		// toggle Calendar
 		const toggleCalendar = (
-			<div id='DateTime' style={selectTimeStyle} onClick={this.toggleCalendar.bind(this)}><img id='DateTime' src='img/calendar.png' width='20' alt='Toggle Calendar' title='Toggle calendar'/></div>
+			<div id='DateTime' style={selectTimeStyle} onClick={this.toggleCalendar.bind(this)}><img id='DateTime' src={calendarDark} width='20' alt='Toggle Calendar' title='Toggle calendar'/></div>
 		);
 
 		// Calendar Nav
@@ -670,22 +679,22 @@ class DateTimePicker extends React.Component{
 		const inputBox= (
 			<div style={inputBoxWrapper}>
 				<input id='DateTime' ref='DateTimeInput' type='text' style={inputstyle} onClick={this.showCalendar.bind(this)} placeholder={this.state.dateFormat+" "+this.state.timeFormat}/>
-				<img style={calendarImgInline} src='img/calendarLight.png' width='26' />
+				<img style={calendarImgInline} src={calendarLight} width='26' />
 			</div>
 		);
 
 		//show clock
 		const showClock=(
-			<div id="DateTime" style={selectTimeStyle} onClick={this.showClock.bind(this)}><img id='DateTime' src='img/clock.png' width='16' alt='Toggle Clock' title='Toggle Clock'/></div>
+			<div id="DateTime" style={selectTimeStyle} onClick={this.showClock.bind(this)}><img id='DateTime' src={clockBtn} width='16' alt='Toggle Clock' title='Toggle Clock'/></div>
 		);
 
 		// 24 HR Clock
 		const clockTypeOne = (
 			<div style={clockStyle}>
 				<div style={hourStyle}>
-					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "INC")}> <img id='DateTime' src='img/inc.png' width='30' /> </div>
+					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "INC")}> <img id='DateTime' src={incBtn} width='30' /> </div>
 					<input name='hour' ref='hour' id='DateTime' style={timeInputStyle} type='text'/> 
-					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "DEC")}> <img id='DateTime' src='img/dec.png' width='30' /> </div>
+					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "DEC")}> <img id='DateTime' src={decBtn} width='30' /> </div>
 				</div>
 				
 				<div style={separator}>
@@ -695,9 +704,9 @@ class DateTimePicker extends React.Component{
 				</div>
 
 				<div style={hourStyle}>
-					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "INC")}> <img id='DateTime' src='img/inc.png' width='30' /> </div>
+					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "INC")}> <img id='DateTime' src={incBtn} width='30' /> </div>
 					<input ref='minutes' id='DateTime' style={timeInputStyle} type='text'/> 
-					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "DEC")}> <img id='DateTime' src='img/dec.png' width='30' /> </div>
+					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "DEC")}> <img id='DateTime' src={decBtn} width='30' /> </div>
 				</div>
 			</div>
 		);
@@ -706,9 +715,9 @@ class DateTimePicker extends React.Component{
 		const clockTypeTwo = (
 			<div style={clockStyle}>
 				<div style={hourStyle}>
-					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "INC")}> <img id='DateTime' src='img/inc.png' width='30' /> </div>
+					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "INC")}> <img id='DateTime' src={incBtn} width='30' /> </div>
 					<input name='hour' ref='hour' id='DateTime' style={timeInputStyle} type='text'/> 
-					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "DEC")}> <img id='DateTime' src='img/dec.png' width='30' /> </div>
+					<div id='DateTime' style={incDec} onClick={this.changeHour.bind(this, "DEC")}> <img id='DateTime' src={decBtn} width='30' /> </div>
 				</div>
 				
 				<div style={separator}>
@@ -718,15 +727,15 @@ class DateTimePicker extends React.Component{
 				</div>
 
 				<div style={hourStyle}>
-					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "INC")}> <img id='DateTime' src='img/inc.png' width='30' /> </div>
+					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "INC")}> <img id='DateTime' src={incBtn} width='30' /> </div>
 					<input ref='minutes' id='DateTime' style={timeInputStyle} type='text'/> 
-					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "DEC")}> <img id='DateTime' src='img/dec.png' width='30' /> </div>
+					<div id='DateTime' style={incDec} onClick={this.changeMinutes.bind(this, "DEC")}> <img id='DateTime' src={decBtn} width='30' /> </div>
 				</div>
 
 				<div style={hourStyle}>
-					<div id='DateTime' style={incDec} onClick={this.changeAmPm.bind(this)}> <img id='DateTime' src='img/inc.png' width='30' /> </div>
+					<div id='DateTime' style={incDec} onClick={this.changeAmPm.bind(this)}> <img id='DateTime' src={incBtn} width='30' /> </div>
 					<input ref='ampm' id='DateTime' style={timeInputStyle} type='text'/> 
-					<div id='DateTime' style={incDec} onClick={this.changeAmPm.bind(this)}> <img id='DateTime' src='img/dec.png' width='30' /> </div>
+					<div id='DateTime' style={incDec} onClick={this.changeAmPm.bind(this)}> <img id='DateTime' src={decBtn} width='30' /> </div>
 				</div>
 			</div>
 		);
