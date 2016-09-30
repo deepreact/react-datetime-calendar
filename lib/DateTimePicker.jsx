@@ -2,10 +2,11 @@
 * @Author: Deep Prakash
 * @Date:   2016-09-26 17:08:02
 * @Last Modified by:   Deep Prakash
-* @Last Modified time: 2016-09-29 15:11:08
+* @Last Modified time: 2016-09-30 13:55:39
 */
 
 import React from 'react';
+
 // images
 var calendarDark = require('file!./img/calendar.png');
 var calendarLight = require('file!./img/calendarLight.png');
@@ -169,7 +170,11 @@ class DateTimePicker extends React.Component{
 				else{
 					formatedtime = hr+":"+min+":00";
 				}
+				
 				this.refs.DateTimeInput.value = formatedtime;
+
+				// pushing the input value out
+				this.props.onUpdate(this.refs.DateTimeInput.value);
 			}
 
 			this.setState({
@@ -333,10 +338,16 @@ class DateTimePicker extends React.Component{
 
 			var datetime = formateddate+" "+formatedtime;
 			this.refs.DateTimeInput.value = datetime;
+
+			// pushing the input value out
+			this.props.onUpdate(this.refs.DateTimeInput.value);
 		}
 		else{
 			var datetime = formateddate;
 			this.refs.DateTimeInput.value = datetime;
+
+			// pushing the input value out
+			this.props.onUpdate(this.refs.DateTimeInput.value);
 		}
 	}
 
@@ -461,6 +472,8 @@ class DateTimePicker extends React.Component{
 	render(){
 		// styles
 		var dropdownstyle;
+		let dropDown;
+		let reactCalendar;
 		if(this.props.background != undefined){
 			dropdownstyle = {
 				background:this.props.background,
@@ -761,7 +774,6 @@ class DateTimePicker extends React.Component{
 		);
 
 		// setting dropdown after checking the mode
-		let dropDown;
 		if(this.props.mode == "datetime" || this.props.mode == undefined){
 			if(this.props.timeFormat == undefined || this.props.timeFormat == "24" || this.props.timeFormat.length == 0){
 				dropDown = (
@@ -805,9 +817,27 @@ class DateTimePicker extends React.Component{
 			}
 		}
 
+		// Windows Style Theme
+
+		// getting the theme
+		if(this.props.theme == 'classic' || this.props.theme == undefined || this.props.theme.length == 0){
+			reactCalendar = (
+				<div>
+					{inputBox}
+					{dropDown}
+				</div>
+			);
+		}
+		else if(this.props.theme == 'windows'){
+			reactCalendar = (
+				<div>
+					<WindowsTheme />
+				</div>
+			);
+		}
+
 		return <div>
-			{inputBox}
-			{dropDown}
+			{reactCalendar}
 		</div>;
 	}
 }
