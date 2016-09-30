@@ -27,9 +27,10 @@ React.render(<DateTimePicker />, document.getElementById("myApp"));
 ### Options
 
 1. mode
-2. background
-3. dateFormat
-4. timeFormat
+2. onUpdate
+3. background
+4. dateFormat
+5. timeFormat
 
 
 ### Descriptions
@@ -38,6 +39,22 @@ React.render(<DateTimePicker />, document.getElementById("myApp"));
 
 		```
 		<DateTimePicker mode = "datetime"/>
+		```
+
+2. onUpdate - Get the value selected into a function
+	
+		```
+		<DateTimePicker onUpdate={this.getValue}/>
+		```
+
+		```
+		getValue:function(value){
+			console.log(value);
+			
+			/*
+			* value is the select datetime value
+			*/
+		}
 		```
 
 2. background - Set the background color of the calendar.
