@@ -21,8 +21,15 @@ var DateTimePicker = require("react-datetime-calendar");
 React.render(<DateTimePicker />, document.getElementById("myApp"));
 
 ```
+```
+Theme
+```
+Classic
+![Alt text](/snapshot.png?raw=true "React DateTime Calendar, theme='classic'")
 
-![Alt text](/snapshot.png?raw=true "React DateTime Calendar")
+
+Window
+![Alt text](/windowTheme.png?raw=true "React DateTime Calendar, theme='window'")
 
 ### Options
 
@@ -31,6 +38,8 @@ React.render(<DateTimePicker />, document.getElementById("myApp"));
 3. background
 4. dateFormat
 5. timeFormat
+6. width
+7. theme
 
 
 ### Descriptions
@@ -72,4 +81,16 @@ React.render(<DateTimePicker />, document.getElementById("myApp"));
 		
 		```
 		<DateTimePicker timeFormat = "12"/>
+		```
+
+5. width - Allow you to control the width of input box and calendar size. Allowed value :- Integer
+		
+		```
+		<DateTimePicker width='400' />
+		```
+
+6. theme - Allow you to choose from multiple themes. Allowed Values :- classic/window
+
+		```
+		<DateTimePicker theme='window' />
 		```
