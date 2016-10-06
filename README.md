@@ -21,14 +21,18 @@ var DateTimePicker = require("react-datetime-calendar");
 React.render(<DateTimePicker />, document.getElementById("myApp"));
 
 ```
-```
-Theme
+
+# Theme
+
 ```
 Classic
+```
 ![Alt text](/snapshot.png?raw=true "React DateTime Calendar, theme='classic'")
 
 
+```
 Window
+```
 ![Alt text](/windowTheme.png?raw=true "React DateTime Calendar, theme='window'")
 
 ### Options
