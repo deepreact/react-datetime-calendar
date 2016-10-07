@@ -21,6 +21,8 @@ var windowPrev = require('file!./img/windowPrev.png');
 var anchor = require('file!./img/anchor-blue.png');
 var windowCalendar = require('file!./img/windowCalendar.png');
 var windowClock = require('file!./img/windowClock.png');
+var cubitoPrev = require('file!./img/cubitoPrev.png');
+var cubitoNext = require('file!./img/cubitoNext.png');
 
 
 class DateTimePicker extends React.Component{
@@ -30,7 +32,9 @@ class DateTimePicker extends React.Component{
 		this.state={
 			dropdowndisplay:"none",
 			calendarObj:[],
-			currentMonth:0,
+			selectedDateVal:0,
+			selectedMonthVal:0,
+			selectedYearVal:0,
 			currentMonth:0,
 			currentYear:2016,
 			todayDate:1,
@@ -45,6 +49,7 @@ class DateTimePicker extends React.Component{
 			ampm:"",
 			formatedDate:"",
 			windowDateData:"",
+			cubitoDateData:"",
 		};
 	}
 
@@ -126,85 +131,109 @@ class DateTimePicker extends React.Component{
 		this.getCalendar(calendar_start, no_of_days, currentMonth, today.getFullYear());
 
 		// Intializing Window Calendar input
-		if(this.props.theme == 'window' && this.state.calendarVisible == true){
+		if((this.props.theme == 'window' && this.state.calendarVisible == true) || this.props.theme == 'cubito' && this.state.calendarVisible == true){
 			var formateddate;
 			var formatedtime;
 			var months = [
-				"JAN",
-				"FEB",
-				"MAR",
-				"APR",
-				"MAY",
-				"JUN",
-				"JUL",
-				"AUG",
-				"SEP",
-				"OCT",
-				"NOV",
-				"DEC"
+				"Jan",
+				"Feb",
+				"Mar",
+				"Apr",
+				"May",
+				"Jun",
+				"Jul",
+				"Aug",
+				"Sep",
+				"Oct",
+				"Nov",
+				"Dec"
+			];
+			var days = [
+				"Sun",
+				"Mon",
+				"Tue",
+				"Wed",
+				"Thu",
+				"Fri",
+				"Sat",
 			];
 			var date = today.getDate();
 			var month = today.getMonth();
 			var year = today.getFullYear();
+			var day = today.getDay();
 			var datetimeData = "";
 			var hr = "00";
 			var min = "00";
+
+			this.setState({
+				selectedDateVal:date,
+				selectedMonthVal:month+1,
+				selectedYearVal:year
+			});
+
 			// adding 0 to single digit date
 			if(date.toString().length == 1){
 				date = "0"+date;
 			}
 			// fomatting date
-			if(this.state.dateFormat == 'YYYY-MM-DD' || this.state.dateFormat == 'yyyy-mm-dd'){
+			if(this.props.dateFormat == 'YYYY-MM-DD' || this.props.dateFormat == 'yyyy-mm-dd'){
 				// adding 0 to single digit month
 				if(month.toString().length == 1){
 					month = "0"+month;
 				}
 				formateddate = year+"-"+month+"-"+date;
 			}
-			else if(this.state.dateFormat == 'DD-MM-YYYY' || this.state.dateFormat == 'dd-mm-yyyy'){
+			else if(this.props.dateFormat == 'DD-MM-YYYY' || this.props.dateFormat == 'dd-mm-yyyy'){
 				// adding 0 to single digit month
 				if(month.toString().length == 1){
 					month = "0"+month;
 				}
 				formateddate = date+"-"+month+"-"+year;	
 			}
-			else if(this.state.dateFormat == 'YYYY/MM/DD' || this.state.dateFormat == 'yyyy/mm/dd'){
+			else if(this.props.dateFormat == 'YYYY/MM/DD' || this.props.dateFormat == 'yyyy/mm/dd'){
 				// adding 0 to single digit month
 				if(month.toString().length == 1){
 					month = "0"+month;
 				}
 				formateddate = year+"/"+month+"/"+date;	
 			}
-			else if(this.state.dateFormat == 'DD/MM/YYYY' || this.state.dateFormat == 'dd/mm/yyyy'){
+			else if(this.props.dateFormat == 'DD/MM/YYYY' || this.props.dateFormat == 'dd/mm/yyyy'){
 				// adding 0 to single digit month
 				if(month.toString().length == 1){
 					month = "0"+month;
 				}
 				formateddate = date+"/"+month+"/"+year;	
 			}
-			else if(this.state.dateFormat == 'MONTH DATE YEAR' || this.state.dateFormat == 'month date year'){
-				formateddate = months[month-1]+" "+date+" "+year;
+			else if(this.props.dateFormat == 'MONTH DATE YEAR' || this.props.dateFormat == 'month date year'){
+				formateddate = months[month]+" "+date+" "+year;
 			}
-			else if(this.state.dateFormat == 'DATE MONTH YEAR' || this.state.dateFormat == 'date month year'){
-				formateddate = date+" "+months[month-1]+" "+year;
+			else if(this.props.dateFormat == 'DATE MONTH YEAR' || this.props.dateFormat == 'date month year'){
+				formateddate = date+" "+months[month]+" "+year;
+			}
+			else if(this.props.dateFormat == 'MONTH DATE DAY - YEAR' || this.props.dateFormat == 'month date day - year' || this.state.dateFormat == 'MONTH DATE DAY-YEAR' || this.state.dateFormat == 'month date day-year'){
+				formateddate = months[month]+" "+ date +" "+days[day]+" - "+year;	
 			}
 			else{
 				formateddate = year+"-"+month+"-"+date;
 			}
 
 			// getting time in format
-			if(this.refs.hour.value.length == 1){
-				hr = "0"+this.refs.hour.value;
+			if(this.props.mode == 'datetime' || this.props.mode == 'time')
+			{
+				if(this.refs.hour.value.length == 1){
+					hr = "0"+this.refs.hour.value;
+				}
+				else{
+					hr = this.refs.hour.value;
+				}
+				if(this.refs.minutes.value.length == 1){
+					min = "0"+this.refs.minutes.value;
+				}
+				else{
+					min = this.refs.minutes.value;
+				}
 			}
-			else{
-				hr = this.refs.hour.value;
-			}
-			if(this.refs.minutes.value.length == 1){
-				min = "0"+this.refs.minutes.value;
-			}
-			else{
-				min = this.refs.minutes.value;
-			}
+			
 
 			// formatting time
 			if(ampm.length != 0){
@@ -216,23 +245,42 @@ class DateTimePicker extends React.Component{
 
 
 			//setting input value according to format
-			if(this.props.mode == 'date'){
-				this.setState({
-					windowDateData : formateddate
-				});
-			}
-			else if(this.props.mode == 'time'){
-				this.setState({
-					windowDateData:formatedtime
-				});
+			if(this.props.theme == 'window'){
+				if(this.props.mode == 'date'){
+					this.setState({
+						windowDateData : formateddate
+					});
+				}
+				else if(this.props.mode == 'time'){
+					this.setState({
+						windowDateData:formatedtime
+					});
+				}
+				else{
+					datetimeData = formateddate+" "+formatedtime
+					this.setState({
+						windowDateData:datetimeData
+					});
+				}	
 			}
 			else{
-				datetimeData = formateddate+" "+formatedtime
-				this.setState({
-					windowDateData:datetimeData
-				});
+				if(this.props.mode == 'date'){
+					this.setState({
+						cubitoDateData : formateddate
+					});
+				}
+				else if(this.props.mode == 'time'){
+					this.setState({
+						cubitoDateData:formatedtime
+					});
+				}
+				else{
+					datetimeData = formateddate+" "+formatedtime
+					this.setState({
+						cubitoDateData:datetimeData
+					});
+				}	
 			}
-			
 		}
 	}
 
@@ -251,7 +299,7 @@ class DateTimePicker extends React.Component{
 			currentHour:currentHour,
 			currentMinute:currentMinute,
 			Clock:"none",
-		});	
+		});
 	}
 
 	// show calender when clicked on input box
@@ -298,6 +346,12 @@ class DateTimePicker extends React.Component{
 						windowDateData : formatedtime
 					});
 					this.props.onUpdate(formatedtime);
+				}
+				else if(this.props.theme == 'cubito'){
+					this.setState({
+						cubitoDateData : formatedtime
+					});
+					this.props.onUpdate(formatedtime);	
 				}
 			}
 
@@ -376,21 +430,37 @@ class DateTimePicker extends React.Component{
 
 	// Select Date
 	selectDate(date, month, year){
+		this.setState({
+			selectedDateVal:date,
+			selectedMonthVal:month,
+			selectedYearVal:year,
+		})
+		var selectedDate = new Date(year,month-1,date);
+		var day = selectedDate.getDay();
 		var formateddate;
 		var formatedtime;
 		var months = [
-			"JAN",
-			"FEB",
-			"MAR",
-			"APR",
-			"MAY",
-			"JUN",
-			"JUL",
-			"AUG",
-			"SEP",
-			"OCT",
-			"NOV",
-			"DEC"
+			"Jan",
+			"Feb",
+			"Mar",
+			"Apr",
+			"May",
+			"Jun",
+			"Jul",
+			"Aug",
+			"Sep",
+			"Oct",
+			"Nov",
+			"Dec"
+		];
+		var days = [
+			"Sun",
+			"Mon",
+			"Tue",
+			"Wed",
+			"Thu",
+			"Fri",
+			"Sat",
 		];
 		
 		// adding 0 to single digit date
@@ -432,6 +502,9 @@ class DateTimePicker extends React.Component{
 		else if(this.state.dateFormat == 'DATE MONTH YEAR' || this.state.dateFormat == 'date month year'){
 			formateddate = date+" "+months[month-1]+" "+year;
 		}
+		else if(this.props.dateFormat == 'MONTH DATE DAY - YEAR' || this.props.dateFormat == 'month date day - year' || this.state.dateFormat == 'MONTH DATE DAY-YEAR' || this.state.dateFormat == 'month date day-year'){
+			formateddate = months[month-1]+" "+ date +" "+days[day]+" - "+year;	
+		}
 		else{
 			formateddate = year+"-"+month+"-"+date;
 		}
@@ -471,6 +544,12 @@ class DateTimePicker extends React.Component{
 				});
 				this.props.onUpdate(datetime);
 			}
+			else if(this.props.theme == 'cubito'){
+				this.setState({
+					cubitoDateData : datetime,
+				});
+				this.props.onUpdate(datetime);	
+			}
 		}
 		else{
 			var datetime = formateddate;
@@ -481,6 +560,12 @@ class DateTimePicker extends React.Component{
 			else if(this.props.theme == 'window'){
 				this.setState({
 					windowDateData : datetime
+				});
+				this.props.onUpdate(datetime);
+			}
+			else if(this.props.theme == 'cubito'){
+				this.setState({
+					cubitoDateData : datetime
 				});
 				this.props.onUpdate(datetime);
 			}
@@ -495,18 +580,35 @@ class DateTimePicker extends React.Component{
 	// change hour
 	changeHour(task){
 		var currentHour = parseInt(this.refs.hour.value);
-		if(task == "INC" && currentHour < 23){
-			this.refs.hour.value = currentHour + 1;
+		if(this.props.timeFormat == '24' || this.props.timeFormat == undefined){
+			if(task == "INC" && currentHour < 23){
+				this.refs.hour.value = currentHour + 1;
+			}
+			else if(task == "DEC" && currentHour > 0 ){
+				this.refs.hour.value = currentHour - 1;
+			}
+			else if(currentHour >= 23){
+				this.refs.hour.value = 0;
+			}
+			else if(currentHour <= 0){
+				this.refs.hour.value = 23;
+			}
 		}
-		else if(task == "DEC" && currentHour > 0 ){
-			this.refs.hour.value = currentHour - 1;
+		else if(this.props.timeFormat == '12'){
+			if(task == "INC" && currentHour < 12){
+				this.refs.hour.value = currentHour + 1;
+			}
+			else if(task == "DEC" && currentHour > 1 ){
+				this.refs.hour.value = currentHour - 1;
+			}
+			else if(currentHour >= 12){
+				this.refs.hour.value = 1;
+			}
+			else if(currentHour <= 1){
+				this.refs.hour.value = 12;
+			}
 		}
-		else if(currentHour >= 23){
-			this.refs.hour.value = 0;
-		}
-		else if(currentHour <= 0){
-			this.refs.hour.value = 23;
-		}
+		
 	}
 
 	// Change Minutes
@@ -540,6 +642,57 @@ class DateTimePicker extends React.Component{
 				ampm:"AM"
 			});
 		}
+	}
+
+	// Previsous date for theme cubito
+	prevDate(){
+		
+		var month = this.state.selectedMonthVal;
+		var year = this.state.selectedYearVal;
+		var date = this.state.selectedDateVal;
+
+		if(date>1){
+			date = date - 1;			
+		}
+		if(date <= 1){
+			date = this.getDaysInMonth(month-1, year);
+			if(month>1){
+				month = month-1;
+			}
+			else{
+				month = 12;
+				year-=1;
+			}
+			this.setState({
+				selectedMonthVal:month
+			})
+		}
+		this.selectDate(date,month,year);
+	}
+
+	// next date for theme cubito
+	nextDate(){
+		var month = this.state.selectedMonthVal;
+		var year = this.state.selectedYearVal;
+		var date = this.state.selectedDateVal;
+
+		if(date>1){
+			date = date + 1;			
+		}
+		if(date >= this.getDaysInMonth(month, year)){
+			date = 1;
+			if(month<12){
+				month = month+1;
+			}
+			else{
+				month = 1;
+				year+=1;
+			}
+			this.setState({
+				selectedMonthVal:month
+			})
+		}
+		this.selectDate(date,month,year);	
 	}
 
 	// Show clock
@@ -648,7 +801,7 @@ class DateTimePicker extends React.Component{
 				textAlign:"center",
 			};	
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			dropdownstyle = {
 				background: (this.props.background != undefined) ? this.props.background : "#ecf0f1",
 				display:this.state.dropdowndisplay,
@@ -659,8 +812,8 @@ class DateTimePicker extends React.Component{
 		}
 		
 		var inputBoxWrapper = {
-			width:(this.props.width != undefined) ? (this.props.width - 100) : 300,
-			borderStyle:(this.props.theme == 'window') ? "none" :"solid",
+			width:(this.props.width != undefined) ? (this.props.width - 70) : 350,
+			borderStyle:(this.props.theme == 'window' || this.props.theme == 'cubito') ? "none" :"solid",
 			borderWidth:1,
 			borderColor:"#bdc3c7",
 			fontFamily:"verdana",
@@ -696,7 +849,7 @@ class DateTimePicker extends React.Component{
 				cursor:"pointer"
 			};	
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			navDaysBlock = {
 				display:"inline-block",
 				width:"14%",
@@ -718,7 +871,7 @@ class DateTimePicker extends React.Component{
 				textAlign:"center"
 			};	
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			calendarStyle = {
 				display:this.state.Calendar,
 				width:"100%",
@@ -750,7 +903,7 @@ class DateTimePicker extends React.Component{
 				display:"inline-block",
 			};	
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			navBlocks={
 				display:"inline-block",
 				fontWeight:"normal",
@@ -764,7 +917,7 @@ class DateTimePicker extends React.Component{
 			NextBtn = nextBtn;
 			PrevBtn = prevBtn;
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			NextBtn = windowNext;
 			PrevBtn = windowPrev;
 		}
@@ -870,14 +1023,66 @@ class DateTimePicker extends React.Component{
 			borderWidth:"0px 0px 1px 0px"
 		};
 		
-
+		var cubitoTitle={
+				display:"inline-block",
+				width:"78%",
+				borderStyle:"solid",
+				borderColor:"#e5e5e5",
+				borderWidth:1,
+				textAlign:"center",
+				fontSize:11,
+				fontFamily:"verdana",
+				fontWeight:"bold",
+				padding:"3px 0px 3px 0px",
+				color:"#7f8c8d",
+				cursor:"pointer"
+			};
+			var cubitoinline={
+				display:"inline-block",
+				cursor:"pointer"
+			};
+			var cubitoinlineltr={
+				display:"inline-block",
+				float:"left",
+				borderStyle:"solid",
+				borderColor:"#e5e5e5",
+				borderWidth:"0px 1px 0px 0px",
+				textAlign:"center",
+				width:25,
+				cursor:"pointer",
+			};
+			var cubitoinlinertl={
+				display:"inline-block",
+				float:"right",
+				borderStyle:"solid",
+				borderColor:"#e5e5e5",
+				borderWidth:"0px 0px 0px 1px",
+				textAlign:"center",
+				width:25,
+				cursor:"pointer"
+			};
+			var cubitoToday = {
+				display:"inline-block",
+				marginLeft:6,
+				width:"18%",
+				background:"#34495e",
+				borderStyle:"none",
+				borderRadius:4,
+				textAlign:"center",
+				fontSize:12,
+				fontFamily:"verdana",
+				padding:"3px 0px 3px 0px",
+				color:"#ecf0f1",
+				cursor:"pointer",
+			};
+			
 		// toggle Calendar
 		if(this.props.theme == undefined || this.props.theme == 'classic'){
 			toggleCalendar = (
 				<div id='DateTime' style={selectTimeStyle} onClick={this.toggleCalendar.bind(this)}><img id='DateTime' src={calendarDark} width='20' alt='Toggle Calendar' title='Toggle calendar'/></div>
 			);	
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			toggleCalendar = (
 				<div id='DateTime' style={selectTimeStyle} onClick={this.toggleCalendar.bind(this)}><img id='DateTime' src={windowCalendar} width='20' alt='Toggle Calendar' title='Toggle calendar'/></div>
 			);	
@@ -894,7 +1099,7 @@ class DateTimePicker extends React.Component{
 				</div>
 			);
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			calendarNav = (
 				<div style={navstyle}>
 					<button id='DateTime' style={prev} onClick={this.prevMonth.bind(this, this.state.currentMonth, this.state.currentYear)}></button>
@@ -921,7 +1126,7 @@ class DateTimePicker extends React.Component{
 		// Calendar dates
 		calendar = this.state.calendarObj.map(function(index){
 			counter++;
-			if(this.props.theme == 'window'){
+			if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 				var borderWidthVal;
 				if(counter == 1 && rowCount == 1){
 					borderWidthVal = "0px 1px 1px 0px";
@@ -971,7 +1176,7 @@ class DateTimePicker extends React.Component{
 					cursor:"pointer"
 				};
 			}
-			else if(this.props.theme == 'window'){
+			else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 				var height;
 				if(this.props.width != undefined){
 					height = (this.props.width - 100) / 6;
@@ -1010,7 +1215,7 @@ class DateTimePicker extends React.Component{
 					cursor:"pointer"
 				};	
 			}
-			else if(this.props.theme == 'window'){
+			else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 				var height;
 				if(this.props.width != undefined){
 					height = (this.props.width - 100) / 6;
@@ -1041,7 +1246,7 @@ class DateTimePicker extends React.Component{
 					<div onClick={this.selectDate.bind(this, index, this.state.currentMonth, this.state.currentYear)} style={inlineBlocks}>{index}</div>
 				);
 			}
-			else if(index == "" && this.props.theme == 'window'){
+			else if(index == ""){
 				return (
 					<div style={inlineBlocks}>{index}</div>
 				);
@@ -1083,7 +1288,7 @@ class DateTimePicker extends React.Component{
 				</div>
 			);
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			calendarData = (
 				<div style={calendarStyle}>
 					{calendarNav}
@@ -1114,6 +1319,28 @@ class DateTimePicker extends React.Component{
 				</div>
 			);
 		}
+		else if(this.props.theme == 'cubito'){
+			
+			inputBox= (
+				<div style={inputBoxWrapper}>
+					<div id='DateTime' style={cubitoTitle} onClick={this.showCalendar.bind(this)}>
+						<div style={cubitoinlineltr} onClick={this.prevDate.bind(this)}><img src={cubitoPrev} width='15'/></div>
+						<div id='DateTime' style={cubitoinline}>{(this.state.cubitoDateData != "")? this.state.cubitoDateData : (this.state.todayDate.getDate() + "/" + this.state.currentMonth + "/" + this.state.currentYear)}</div>
+						<div style={cubitoinlinertl} onClick={this.nextDate.bind(this)}><img src={cubitoNext} width='15'/></div>
+					</div>
+					<div style={cubitoToday} onClick={this.selectDate.bind(this, this.state.todayDate.getDate(), this.state.todayDate.getMonth()+1, this.state.todayDate.getFullYear())}>Today</div>
+				</div>
+			);	
+		}
+		else{
+			inputBox= (
+				<div style={inputBoxWrapper}>
+					<div id='DateTime' style={windowTitle}>
+						Incorrect value in prop theme,<br /> react-datetime-calendar
+					</div>
+				</div>
+			);	
+		}
 
 		//show clock
 		let showClock;
@@ -1122,7 +1349,7 @@ class DateTimePicker extends React.Component{
 				<div id="DateTime" style={selectTimeStyle} onClick={this.showClock.bind(this)}><img id='DateTime' src={clockBtn} width='16' alt='Toggle Clock' title='Toggle Clock'/></div>
 			);
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			showClock=(
 				<div id="DateTime" style={selectTimeStyle} onClick={this.showClock.bind(this)}><img id='DateTime' src={windowClock} width='16' alt='Toggle Clock' title='Toggle Clock'/></div>
 			);
@@ -1189,7 +1416,7 @@ class DateTimePicker extends React.Component{
 				</div>
 			);
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			calendarMode = (
 				<div>
 					{calendarSuper}
@@ -1257,7 +1484,7 @@ class DateTimePicker extends React.Component{
 				}
 			}
 		}
-		else if(this.props.theme == 'window'){
+		else if(this.props.theme == 'window' || this.props.theme == 'cubito'){
 			if(this.props.mode == "datetime" || this.props.mode == undefined){
 				if(this.props.timeFormat == undefined || this.props.timeFormat == "24"){
 					dropDown = (

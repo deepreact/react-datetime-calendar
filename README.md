@@ -25,15 +25,20 @@ React.render(<DateTimePicker />, document.getElementById("myApp"));
 # Theme
 
 ```
-Classic
+1. Classic
 ```
 ![Alt text](/snapshot.png?raw=true "React DateTime Calendar, theme='classic'")
 
 
 ```
-Window
+2. Window
 ```
 ![Alt text](/windowTheme.png?raw=true "React DateTime Calendar, theme='window'")
+
+```
+3. Cubito
+```
+![Alt text](/cubitoTheme.png?raw=true "React DateTime Calendar, theme='cubito'")
 
 ### Options
 
@@ -70,30 +75,30 @@ Window
 		}
 		```
 
-2. background - Set the background color of the calendar.
+3. background - Set the background color of the calendar.
 
 		```
 		<DateTimePicker background = "white"/>
 		```
-3. dateFormat - Allowed Values :- YYYY-MM-DD / DD-MM-YYYY / YYYY/MM/DD / DD/MM/YYYY / MONTH DATE YEAR / DATE MONTH YEAR
+4. dateFormat - Allowed Values :- YYYY-MM-DD / DD-MM-YYYY / YYYY/MM/DD / DD/MM/YYYY / MONTH DATE YEAR / DATE MONTH YEAR / MONTH DATE DAY - YEAR
 		
 		```
-		<DateTimePicker dateFormat = "MONTH DATE YEAR"/>
+		<DateTimePicker dateFormat = "MONTH DATE DAY - YEAR"/>
 		```
 
-4. timeFormat - Allowed Values :- 12 / 24
+5. timeFormat - Allowed Values :- 12 / 24
 		
 		```
 		<DateTimePicker timeFormat = "12"/>
 		```
 
-5. width - Allow you to control the width of input box and calendar size. Allowed value :- Integer
+6. width - Allow you to control the width of input box and calendar size. Allowed value :- Integer
 		
 		```
 		<DateTimePicker width='400' />
 		```
 
-6. theme - Allow you to choose from multiple themes. Allowed Values :- classic/window
+7. theme - Allow you to choose from multiple themes. Allowed Values :- classic/window/cubito
 
 		```
 		<DateTimePicker theme='window' />
