@@ -1,8 +1,8 @@
 /*
 * @Author: Deep Prakash
 * @Date:   2016-09-26 17:08:02
-* @Last Modified by:   Deep Prakash
-* @Last Modified time: 2016-10-03 17:32:45
+* @Last Modified by:   Cubito Team
+* @Last Modified time: 2016-10-07 14:53:51
 */
 
 import React from 'react';
@@ -676,10 +676,12 @@ class DateTimePicker extends React.Component{
 		var year = this.state.selectedYearVal;
 		var date = this.state.selectedDateVal;
 
-		if(date>1){
+		console.log(date,month,year);
+		console.log(this.getDaysInMonth(month, year));
+		if(date>= 1){
 			date = date + 1;			
 		}
-		if(date >= this.getDaysInMonth(month, year)){
+		if(date > this.getDaysInMonth(month, year)){
 			date = 1;
 			if(month<12){
 				month = month+1;
